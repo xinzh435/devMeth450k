@@ -43,7 +43,8 @@ save(coefs, file="rdas/cellComp_estimates_cellLines_NeuNs.rda")
 
 ######### PREPROCESS LIBD SAMPLES##########
 # read in phenotype data from GEO objects for reproducibility
-load("/dcs01/ajaffe/Brain/DNAm/ECD2014/devMeth450k_Mset_RGset.rda")
+# load("/dcs01/ajaffe/Brain/DNAm/ECD2014/devMeth450k_Mset_RGset.rda")
+load("/home/data/GSE74193/GSE74193_devMeth450k_Mset_RGset.rda")
 pd = as.data.frame(pData(Mset))
 
 path = "/dcs01/ajaffe/Brain/DNAm/ECD2014/idats/" # change for GEO download
