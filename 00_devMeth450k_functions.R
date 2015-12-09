@@ -55,14 +55,14 @@ blockPlot = function(cset, blocks450, coi, N=10,
 
 	## annotation based on ensembl
 	cat("Loading Annotation.\n")
-	load("/home/epi/ajaffe/GenomicStates/GenomicState.Hsapiens.ensembl.GRCh37.p12.rda")
+	load("./rdas/GenomicState.Hsapiens.ensembl.GRCh37.p12.rda")
 	gs = GenomicState.Hsapiens.ensembl.GRCh37.p12$fullGenome
 	oo = findOverlaps(blocksTable, gs)
 	anno = split(gs[subjectHits(oo)], queryHits(oo))
 
 	# cancer blocks
 	if(showCancerPanel) {
-		load("/home/epi/ajaffe/Lieber/Projects/450k/devPaper/cancer_blocks_hansen.rda")
+		load("./rdas/cancer_blocks_hansen.rda")
 		genome(blocks)="hg19"
 		cancerBlocks = blocks
 	}

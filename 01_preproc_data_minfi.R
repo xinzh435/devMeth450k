@@ -8,9 +8,8 @@ library(minfi)
 ##### PUBLIC DATA
 ## stem cell
 ## 
-GEOquery::getGEOSuppFiles("GSE38216")
-x = read.delim("GSE38216/GSE38216_signal_intensities.txt.gz",
-	as.is=TRUE,skip=4,header=TRUE,	row.names=1)
+# GEOquery::getGEOSuppFiles("GSE38216")
+x = read.delim("/home/data/GSE38216/GSE38216_signal_intensities.txt.gz", as.is=TRUE,skip=4,header=TRUE,	row.names=1)
 M1 = x[,grep("Methylated", colnames(x))]
 U1 = x[,grep("Unmethylated", colnames(x))]
 
