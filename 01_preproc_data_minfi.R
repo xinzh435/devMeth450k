@@ -47,8 +47,8 @@ save(coefs, file="rdas/cellComp_estimates_cellLines_NeuNs.rda")
 load("/home/data/GSE74193/GSE74193_devMeth450k_Mset_RGset.rda")
 pd = as.data.frame(pData(Mset))
 
-path = "/dcs01/ajaffe/Brain/DNAm/ECD2014/idats/" # change for GEO download
-pd$BasePath=paste0(path, pd$Chip)
+# path = "/dcs01/ajaffe/Brain/DNAm/ECD2014/idats/" # change for GEO download
+# pd$BasePath=paste0(path, pd$Chip)
 
 # add age groups
 pd$ageGroup = cut(pd$Age, breaks = c(-0.5,0,0.6,10,20,50,100))
