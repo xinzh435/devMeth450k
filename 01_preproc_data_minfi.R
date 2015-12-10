@@ -39,7 +39,7 @@ MsetNorm = preprocessQuantile(Mset, merge=TRUE)
 compData = minfi:::pickCompProbes(MsetNorm)
 coefs = compData$coefEsts
 coefs = coefs[!duplicated(rownames(coefs)),] # some are dups
-save(coefs, file="rdas/cellComp_estimates_cellLines_NeuNs.rda")
+#  save(coefs, file="rdas/cellComp_estimates_cellLines_NeuNs.rda") 
 
 ######### PREPROCESS LIBD SAMPLES##########
 # read in phenotype data from GEO objects for reproducibility
@@ -48,7 +48,9 @@ load("/home/data/GSE74193/GSE74193_devMeth450k_Mset_RGset.rda")
 pd = as.data.frame(pData(Mset))
 
 # path = "/dcs01/ajaffe/Brain/DNAm/ECD2014/idats/" # change for GEO download
-# pd$BasePath=paste0(path, pd$Chip)
+path = "/home/data/GSE74193/idats/" # change for GEO download
+IDats <- list.files ( "/home/data/GSE74193/idats/", pattern="*_Red.idat.gz")   #get file names for all the file
+pd$BasePath = paste0(path, sub("(.+)(_Red\\.idat\\.gz)","\\1", IDats[ sapply(pd$Chip, grep, IDats)] ) ) #
 
 # add age groups
 pd$ageGroup = cut(pd$Age, breaks = c(-0.5,0,0.6,10,20,50,100))
@@ -60,7 +62,7 @@ RGset = read.450k(pd$BasePath)
 # add control genes
 controlProbes = minfi:::.extractFromRGSet450k(RGset)
 negControlPCs = prcomp(t(log2(rbind(controlProbes$greenControls$NEGATIVE,
-	controlProbes$redControls$NEGATIVE)+1)))$x[,1:4]
+	controlProbes$redControls$NEGATIVE)+1)))$x[,1:4]   # principal component analysis of the negative control probes, using pc1--pc4.
 colnames(negControlPCs) = paste0("negControl_", 	
 	colnames(negControlPCs))
 # pd = cbind(pd, negControlPCs)
@@ -92,5 +94,5 @@ counts = minfi:::projectCellType(getBeta(Mset[rownames(coefs), ]), coefs)
 # add phenotype data to Mset
 pData(Mset) = DataFrame(pd)
 
-save(Mset, RGset, 
-	file="/dcs01/ajaffe/Brain/DNAm/ECD2014/devMeth450k_Mset_RGset.rda")
+# save(Mset, RGset, 
+# 	file="/home/data/GSE74193/devMeth450k_Mset_RGset.rda") # The data is already there, don't need to 

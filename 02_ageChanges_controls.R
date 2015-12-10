@@ -4,33 +4,34 @@ library(minfi)
 library(limma)
 library(RColorBrewer)
 
+# rm ( list = ls ())
+# gc()
+
+
 source("00_devMeth450k_functions.R")
 
 # load data
-load("/dcs01/ajaffe/Brain/DNAm/ECD2014/devMeth450k_Mset_RGset.rda")
+load("/home/data/GSE74193/GSE74193_devMeth450k_Mset_RGset.rda")
 
 # filter probes on chrX,Y and containing snps at SBE and target CpG
 Mset = addSnpInfo(Mset)
-Mset = Mset[is.na(getSnpInfo(Mset)$CpG_rs) & 
-	is.na(getSnpInfo(Mset)$SBE_rs),]
-Mset = Mset[!seqnames(rowData(Mset)) %in% c("chrX","chrY")]
+Mset = Mset[is.na(getSnpInfo(Mset)$CpG_rs) & is.na(getSnpInfo(Mset)$SBE_rs),]
+# Mset = Mset[!seqnames(rowData(Mset)) %in% c("chrX","chrY")]
+Mset = Mset[!seqnames(rowRanges(Mset)) %in% c("chrX","chrY")]  # rwoData replaced by rowRanges. 
 
 ## filter people
-keepIndex = which(pData(Mset)$bestQC & 
-	pData(Mset)$Gender == pData(Mset)$predictedSex & 
-	pData(Mset)$Dx == "Control")
+keepIndex = which(pData(Mset)$bestQC & pData(Mset)$Gender == pData(Mset)$predictedSex & pData(Mset)$Dx == "Control")
 Mset = Mset[,keepIndex]
 	
 ## extract data on remaining people
 pd = as.data.frame(pData(Mset))
 p = getBeta(Mset)
-map = as.data.frame(rowData(Mset))
+map = as.data.frame(rowRanges(Mset))  # rwoData replaced by rowRanges.
 colnames(map)[1] = "chr"
 
 ## composition
 counts = pd[,c("ES", "NPC","DA_NEURON","NeuN_pos","NeuN_neg")]
-pdf("plots/Figure2abcd.pdf",w=5,h=3.5,
-	useDingbats=FALSE)
+pdf("plots2/Figure2abcd.pdf",w=5,h=3.5, useDingbats=FALSE)
 for(i in 1:ncol(counts)) {
 	par(bty="n")
 	agePlotter(counts[,i], pd$Age, mainText=colnames(counts)[i],
@@ -47,7 +48,7 @@ signif(sapply(tList, function(x) x$p.value),3)
  # 1.21e-24  5.74e-25  9.90e-01  3.57e-24  8.09e-86
 
 ## negative control probes
-pdf("plots/jaffe_suppFigure10a_RUV.pdf")
+pdf("plots2/jaffe_suppFigure10a_RUV.pdf")
 par(mar=c(5,6,2,2))
 palette(brewer.pal(8, "Dark2"))
 boxplot(negControl_PC1 ~ Plate, data=pd, col = 1:4,
@@ -58,7 +59,7 @@ boxplot(negControl_PC2 ~ Plate, data=pd, col = 1:4,
 	cex.lab=1.8,cex.axis=1.8)
 dev.off()
 
-pdf("plots/jaffe_suppFigure10b_RUV.pdf",w=12)
+pdf("plots2/jaffe_suppFigure10b_RUV.pdf",w=12)
 par(mar=c(7,3,2,2))
 tt = table(pd$Sentrix_ID, pd$Plate)
 tt = apply(tt, 1, which.max)
@@ -80,7 +81,7 @@ oo = order(matrixStats::rowSds(p),decreasing=TRUE)[1:100000]
 pca = prcomp(t(p[oo,]))
 pcaVars = getPcaVars(pca)
 
-pdf("plots/jaffe_suppFigure1_PCA.pdf")
+pdf("plots2/jaffe_suppFigure1_PCA.pdf")
 par(mar=c(5,6,2,2))
 palette(brewer.pal(8,"Set1"))
 fetal3 = cut(pd$Age, c(-1,0,10,100), label=c("Fetal","Child","Adult"))
